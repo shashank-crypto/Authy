@@ -1,7 +1,8 @@
 // check if user is logged in
 const isLoggedIn = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-    console.log("Not authenticated");
+    console.log("user", req)
+    if(!req.user) return res.status(401).json({'Error' : 'Not logged in'});
+    next();
 }
 
 
