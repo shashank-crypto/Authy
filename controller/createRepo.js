@@ -1,16 +1,18 @@
+const {v4 : uuidv4} = require('uuid');
 const createRepositoryTable = require("../db/table/repo");
 
-const createRepo = async (connection, name, orgId) => {
-    const id = uuidv4();
-    try{
+// create repo
+const createRepo = (connection, name, orgId) => {
+    return new Promise(async (resolve, reject) => {
+        const id = uuidv4();
         await createRepositoryTable(connection);
-        await connection.query('INSERT INTO repositories (id, name, organization_id) VALUES (?, ?, ?)', [id, name, orgId]);
-        console.log('Repository created');
-        return {id, name};
+        connection.query('INSERT INTO repositories (id, name, organization_id) VALUES (?, ?, ?)', [id, name, orgId], (err, results) => {
+            if (err) return reject(err);
+            resolve({"id" : id, "name" : name});
+        }
+        );
     }
-    catch(err){
-        console.log(err);
-    }
+    );
 }
 
 module.exports = createRepo; 

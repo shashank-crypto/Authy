@@ -1,13 +1,13 @@
 // get users from role for a specific organization
-const getOrgUsers = async (connection, orgId) => {
-    try{
-        const result = await connection.query('SELECT * FROM role WHERE organization_id = ?', [orgId]);
-        console.log('Org users retrieved', result);
-        return result;
+const getOrgUsers = (connection, orgId) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT users.id, users.name, users.email, role.role, role.resources FROM role INNER JOIN users ON role.user_id = users.id WHERE role.organization_id = ?', [orgId], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        }
+        );
     }
-    catch(err) {
-        console.log(err)
-    }
+    );
 }
 
 module.exports = getOrgUsers;

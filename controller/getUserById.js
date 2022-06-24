@@ -1,13 +1,13 @@
 // get user by id
-const getUserById = async (connection, id) => {
-    try{
-        const result = await connection.query('SELECT * FROM users WHERE id = ?', [id]);
-        console.log('User retrieved', result);
-        return result;
+const getUserById = (connection, id) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        }
+        );
     }
-    catch(err) {
-        console.log(err)
-    }
+    );
 }
 
 module.exports = getUserById;

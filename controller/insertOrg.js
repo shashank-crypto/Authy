@@ -2,17 +2,17 @@ const {v4: uuidv4} = require('uuid');
 const createOrganizationTable = require('../db/table/organization');
 
 // insert into organization table controller
-const insertOrganisation = async (connection, name) => {
-    const id = uuidv4();
-    try{
+const insertOrganisation = (connection, name) => {
+    return new Promise(async (resolve, reject) => {
+        const id = uuidv4();
         await createOrganizationTable(connection);
-        const result = await connection.query('INSERT INTO organizations (id, name) VALUES (?, ?)', [id, name]);
-        console.log('Organization inserted', result);
-        return {id, name};
+        connection.query('INSERT INTO organizations (id, name) VALUES (?, ?)', [id, name], (err, result) => {
+            if (err) return reject(err);
+            resolve({"id" : id, "name" : name});
+        }
+        );
     }
-    catch(err) {
-        console.log(err);
-    }
+    );
 }
 
 module.exports = insertOrganisation;

@@ -1,13 +1,16 @@
+const createUserTable = require("../db/table/user");
+
 // get user by email
-const getUserByEmail = async (connection, email) => {
-    try{
-        const result = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
-        console.log('User retrieved', result);
-        return result;
+const getUserByEmail = (connection, email) => {
+    return new Promise(async (resolve, reject) => {
+        await createUserTable(connection);
+        connection.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        }
+        );
     }
-    catch(err) {
-        console.log(err)
-    }
+    );
 }
 
 module.exports = getUserByEmail;

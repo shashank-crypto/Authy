@@ -1,16 +1,16 @@
 const createUserTable = require("../db/table/user");
 
 // insert a new user into the database
-const saveUser = async (connection, id, name, email, authSvc) => {
-    try{
+const saveUser = (connection, id, name, email, authSvc) => {
+    return new Promise(async (resolve, reject) => {
         await createUserTable(connection);
-        await connection.query('INSERT INTO users (id, name, email, auth_svc) VALUES (?, ?, ?, ?)', [id, name, email, authSvc]);
-        console.log('User inserted');
-        return {"id" : id, "name" : name, "email" : email, "authSvc" : authSvc};
+        connection.query('INSERT INTO users (id, name, email, auth_svc) VALUES (?, ?, ?, ?)', [id, name, email, authSvc], (err, results) => {
+            if (err) return reject(err);
+            resolve({ "id" : id, "name" : name, "email" : email, "authSvc" : authSvc });
+        }
+        );
     }
-    catch(err) {
-        console.log(err);
-    }
+    );
 }
 
 module.exports = saveUser;
