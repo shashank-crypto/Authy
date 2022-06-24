@@ -14,14 +14,16 @@ passport.use(new googleStratey({
     , async (accessToken, refreshToken, profile, done) => {
         console.log(profile);
         const user = await getUserByEmail(connection, profile.emails[0].value);
+        console.log("user", user);
         if (user.length === 0) {
-            const newUser = await saveUser(connection, uuidv4(), profile.displayName, profile.emails[0].value, 'google');
+            const newUser = await saveUser(connection, profile.id, profile.displayName, profile.emails[0].value, 'google');
             console.log("newuser", newUser);
             done(null, newUser);
         }
         else{
-            if(user.id !== profile.id){
-            console.log(" email already registered with", user);
+            if(user[0]?.id !== profile.id){
+                console.log(" email already registered with", user[0]?.auth_svc);
+                done(" email already registered with", user[0]?.auth_svc);
             }
             done(null, profile);
         }
@@ -32,18 +34,12 @@ passport.use(new googleStratey({
 passport.serializeUser(async (user, done) => {
     done(null, user.id);
 }
-    // , (err, user) => {
-    //     done(err, user);
-    // }
 );
 
 
 passport.deserializeUser(async (id, done) => {
     done(null, id);
 }
-    // , (err, user) => {
-    //     done(err, user);
-    // }
 );
 
 
