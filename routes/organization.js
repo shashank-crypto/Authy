@@ -6,6 +6,7 @@ const getPermission = require('../controller/getPermission');
 const getUserById = require('../controller/getUserById');
 const setRole = require('../controller/setRole');
 const connection = require('../db/conn');
+const sortBy = require('../helper/sortBy');
 
 router.use('/:orgId/repos', require('./repo'))
 
@@ -31,8 +32,10 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const userId = req.user || '118112290937553408948';
+    const {sortby} = req.query;
     try {
         const orgs = await getOrganizations(connection, userId);
+        if(sortby) orgs.sort(sortBy(sortby));
         res.json(orgs);
     }
     catch (err) {

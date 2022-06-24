@@ -16,8 +16,8 @@ app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: fals
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', auth)
-app.use('/api/organizations', isLoggedIn, require('./routes/organization'));
+app.use('/auth', auth)
+app.use('/api/organizations', require('./routes/organization'));
 
 const port = process.env.PORT || 8080;
 
