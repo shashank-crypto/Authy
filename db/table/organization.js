@@ -1,12 +1,13 @@
 //create organisation table if doesn't exist
-const createOrganizationTable = async (connection) => {
-    try{
-        await connection.query('CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(40) PRIMARY KEY, name VARCHAR(255))');
-        console.log('Table created');
+const createOrganizationTable = (connection) => {
+    connection.query('CREATE TABLE IF NOT EXISTS organizations (id VARCHAR(90) PRIMARY KEY, name VARCHAR(255))', (err, result) => {
+        if (err) {
+            console.log(err);
+            return Error(err);
+        }
+        console.log('Table created', result);
     }
-    catch(err){
-        console.log(err);
-    }
+    );
 }
 
 module.exports = createOrganizationTable;
