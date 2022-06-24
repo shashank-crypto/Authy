@@ -17,7 +17,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', auth)
-app.use('/api/organizations', require('./routes/organization'));
+app.use('/api/organizations', isLoggedIn, require('./routes/organization'));
 
 const port = process.env.PORT || 8080;
 
