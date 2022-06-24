@@ -10,11 +10,18 @@ const connection = require('../db/conn');
 router.use('/:orgId/repos', require('./repo'))
 
 router.post('/', async (req, res) => {
-    const { orgName } = req.body;
+    const { orgNames } = req.body;
     const userId = req.user || '118112290937553408948';
     try {
-        const org = await createOrganization(connection, orgName, userId);
-        return res.json(org);
+        let result = [];
+        orgNames.forEach(async orgName => {
+            const createOrg = await createOrganization(connection, orgName, userId);
+            console.log(createOrg);
+            result.push(orgName);
+        console.log(result);
+        })
+        console.log("result");
+        return res.send({"msg" : `${orgNames} created successfully`});
     }
     catch (err) {
         console.log(err);
