@@ -19,18 +19,12 @@ passport.use(new twitterStrategy({
 passport.serializeUser((user, done) => {
     done(null, user);
 }
-    , (err, user) => {
-        done(err, user);
-    }
 );
 
 
 passport.deserializeUser((user, done) => {
     done(null, user);
 }
-    , (err, user) => {
-        done(err, user);
-    }
 );
 
 
