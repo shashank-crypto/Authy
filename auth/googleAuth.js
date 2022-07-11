@@ -4,6 +4,7 @@ const router = require('express').Router();
 const googleStratey = require('passport-google-oauth20').Strategy;
 const saveUser = require('../controller/saveUser');
 const connection = require('../db/conn');
+const createJwtToken = require('../controller/createJwtToken');
 
 passport.use(new googleStratey({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -15,6 +16,7 @@ passport.use(new googleStratey({
         console.log(profile);
         const user = await getUserByEmail(connection, profile.emails[0].value);
         console.log("user", user);
+        console.log("accesssss", accessToken, "refressss", refreshToken);
         if (user.length === 0) {
             const newUser = await saveUser(connection, profile.id, profile.displayName, profile.emails[0].value, 'google');
             console.log("newuser", newUser);
@@ -32,13 +34,13 @@ passport.use(new googleStratey({
 
 
 passport.serializeUser(async (user, done) => {
-    done(null, user.id);
+    done(null, user);
 }
 );
 
 
-passport.deserializeUser(async (id, done) => {
-    done(null, id);
+passport.deserializeUser(async (user, done) => {
+    done(null, user);
 }
 );
 
@@ -47,8 +49,13 @@ router.get('/google', passport.authenticate('google'));
 
 router.get('/google/callback', 
     passport.authenticate('google', 
-    { failureRedirect: '/', successRedirect: '/api/organizations' }
-    )
+    { failureRedirect: '/', session : false }
+    ),
+    (req, res) => {
+        const token = createJwtToken(req.user);
+        res.cookie('token', token, { httpOnly: true });
+        res.send({"token" : token})
+    }
 );
 
 
